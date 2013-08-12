@@ -38,7 +38,7 @@ class core
 		}
 		else 
 		{
-			if(sizeof($args)==1 and is_array($args[0]))
+			/*if(sizeof($args)==1 and is_array($args[0]))
 			{
 				foreach($args[0] as $arg)
 				{
@@ -50,16 +50,26 @@ class core
 				}
 			}
 			else
-			{
-				foreach($args as $arg)
+			{*/
+				if($this->conf->type=='socket')
 				{
-					if(isset($this->conf->list[$arg]))
+					foreach($args as $arg)
 					{
-						$serv = $this->conf->list[$arg];
-						$this->get($serv['name'],$serv['host'],$serv['port'],$arg);
+						if(isset($this->conf->list[$arg]))
+						{
+							$serv = $this->conf->list[$arg];
+							$this->get($serv['name'],$serv['host'],$serv['port'],$arg);
+						}
 					}
 				}
-			}
+				else
+				{
+					foreach($args as $arg)
+					{
+						$this->get($arg,null,null,$arg);
+					}
+				}
+			/*}*/
 		}
 	}
 	
@@ -76,23 +86,42 @@ class core
 	{
 		if(@$this->conf->cache[$write]['timestamp']<(time()-$this->conf->cachelife))
 		{
-			$serv = new ms($host, $port, $this->conf->timeout);
-			
-			if($serv->Online)
+			if($this->conf->type=='eo')
 			{
-				$this->pict($name, $serv->CurPlayers, $serv->MaxPlayers, $write);
+				$mysqli = $this->conf->sql;
+				$ans = $mysqli->query("SELECT * FROM ".$mysqli->real_escape_string($this->conf->db['table'])." WHERE server='".$mysqli->real_escape_string($write)."'");
+				print_r(mysqli_error($mysqli));
+				
+				$ans = $ans->fetch_array(MYSQLI_BOTH);
+				if($ans['max_online']!=0)
+				{
+					$this->pict($name, $ans['online'], $ans['max_online'], $write);
+				}
+				else
+				{
+					$this->pict($name, 0, 0, $write);
+				}
 			}
-			else
+			if($this->conf->type=='socket')
 			{
-				$this->pict($name, 0, 0, $write);
+				$serv = new ms($host, $port, $this->conf->timeout);
+				
+				if($serv->Online)
+				{
+					$this->pict($name, $serv->CurPlayers, $serv->MaxPlayers, $write);
+				}
+				else
+				{
+					$this->pict($name, 0, 0, $write);
+				}
+				
+				$this->conf->set_cache($write,array(
+					'timestamp'=>time(),
+					'current'=>$serv->CurPlayers,
+					'slots'=>$serv->MaxPlayers,
+					'motd'=>$serv->MOTD
+				));
 			}
-			
-			$this->conf->set_cache($write,array(
-				'timestamp'=>time(),
-				'current'=>$serv->CurPlayers,
-				'slots'=>$serv->MaxPlayers,
-				'motd'=>$serv->MOTD
-			));
 		}
 	}
 	
