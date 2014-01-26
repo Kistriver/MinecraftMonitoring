@@ -18,7 +18,10 @@ if(isset($_GET['update']))
 	if(!empty($_GET['update']))
 	{
 		$args = explode(',',$_GET['update']);
-		$core->update($args);
+		foreach($args as $arg)
+		{
+			$core->update($arg);
+		}
 	}
 	else
 	{

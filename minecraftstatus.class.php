@@ -8,15 +8,15 @@
  * @author	Alexey Kachalov
  **/
 
-class ms {
+class MinecraftServerStatus {
 	private $Socket, $Info, $to;
 	public $Online, $MOTD, $CurPlayers, $MaxPlayers, $IP, $Port, $Error;
-	
+
 	public function __construct($IP, $Port = '25565', $timeout='0.5') {
 		$this->IP = $IP;
 		$this->Port = $Port;
 		$this->to = $timeout;
-		
+
 		// Remove any protocols from serveraddress
 		if(preg_match('/(.*):\/\//', $this->IP)) {
 			$this->IP = preg_replace('/(.*):\/\//', '', $this->IP);
@@ -39,20 +39,20 @@ class ms {
 			$this->Error = 'Unsupported IP/Domain format';
 			return;
 		}
-		
+
 		if($this->Socket = @stream_socket_client('tcp://'.$this->IP.':'.$Port, $ErrNo, $ErrStr, $this->to)) {
 			// If IP6 remove brackets
 			if(strpos($this->IP, '[') === 0 && strpos($this->IP, ']') === (strlen($this->IP) - 1))
 				$this->IP = trim($this->IP, '[]');
-			
+
 			$this->Online = true;
-			
+
 			fwrite($this->Socket, "\xfe");
 			$Handle = fread($this->Socket, 2048);
 			//$Handle = str_replace("\x00", '', $Handle);
 			//$Handle = substr($Handle, 2);
 			//$this->Info = explode("\xa7", $Handle); // Separate Infos
-			
+
 			/*if(sizeof($this->Info) == 3) {
 				$this->MOTD       = $this->Info[0];
 				$this->CurPlayers = (int)$this->Info[1];
@@ -71,7 +71,7 @@ class ms {
 				$this->Failed();
 				$this->Error      = 'Unexpected error, cause may be an outdated script';
 			}*/
-			
+
 			$Handle = substr($Handle, 1);
 			if(strpos($Handle, "\x00\x00")!=0)
 			{
@@ -91,7 +91,7 @@ class ms {
 				$this->MaxPlayers = $Handle[2];
 				$this->Error      = false;
 			}
-			
+
 			unset($Handle);
 			fclose($this->Socket);
 		} else {
@@ -100,7 +100,7 @@ class ms {
 			$this->Error = 'Can not reach the server';
 		}
 	}
-	
+
 	public function Info() {
 		return array(
 			'MOTD'       => $this->MOTD,
@@ -108,7 +108,7 @@ class ms {
 			'MaxPlayers' => $this->MaxPlayers
 		);
 	}
-	
+
 	private function Failed() {
 		$this->MOTD       = false;
 		$this->CurPlayers = false;

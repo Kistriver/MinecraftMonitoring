@@ -29,6 +29,7 @@ class core
 	public function update()
 	{
 		$args = func_get_args();
+		//$args = $args[0];
 		if(sizeof($args)==0)
 		{
 			foreach($this->conf->list as $arg => $serv)
@@ -104,7 +105,7 @@ class core
 			}
 			if($this->conf->type=='socket')
 			{
-				$serv = new ms($host, $port, $this->conf->timeout);
+				$serv = new MinecraftServerStatus($host, $port, $this->conf->timeout);
 				
 				if($serv->Online)
 				{
@@ -119,7 +120,7 @@ class core
 					'timestamp'=>time(),
 					'current'=>$serv->CurPlayers,
 					'slots'=>$serv->MaxPlayers,
-					'motd'=>$serv->MOTD
+					//'motd'=>$serv->MOTD
 				));
 			}
 		}
@@ -139,91 +140,99 @@ class core
 	 * @param int $current количество игроков в данный момент на сервере
 	 * @param int $max количество слотов
 	 * @param $write[optional] Вывод(false) или запись(имя файла) картинки(по умолчанию false, то есть вывод)
-	 * 
-	 * FIXME: Рваные края статусбара
 	 */
 	private function pict($name, $current, $max, $write = false)
 	{
 		$imgbgfolder = $this->conf->sysf;
 		$font = $imgbgfolder.$this->conf->font['name'];
-		$fw = $this->conf->font['width'];
 		$textcolor = $this->conf->font['color'];
 		$prec_border = $this->conf->precent_border;
 		$if_offline = $this->conf->if_server_off;
-		
-		$players_max = $max;
-		$players = $current;
-		
-		if($players_max==0)
+		$fontsize = 26;
+		$arc_cut = 34;
+		$zoom = $this->conf->size/125;
+
+		if($max==0)
 		{
-			$players_max = 1;
-			$players = $if_offline;
+			$max = 1;
+			$current = $if_offline;
 		}
-		
-		$prec = floor($players/$players_max*100);
-		
-		if($players>=$players_max)
+
+		$prec = floor( $current/$max*100);
+
+		if($current>=$max)
 			$prec = 100;
-		
+
 		$angle = floor($prec*360/100);
-		$width = 132; $height = 132;/*img size*/
-		$im = imagecreatetruecolor($width, $height+30);
-		$imbg1 = imagecreatefrompng($imgbgfolder.'bg.png');
-		$imbg2 = imagecreatefrompng($imgbgfolder.'bg2.png');
-		
+		$width = $height = 250;
+
+
+		$main = imagecreatetruecolor($width, $height);
+		imagefill($main, 0, 0, imagecolorallocatealpha($main,0, 0, 0, 127));
+		imagesavealpha($main, true);
+
+		$main2 = imagecreatetruecolor($width/2*$zoom, $height/2*$zoom);
+		imagefill($main2, 0, 0, imagecolorallocatealpha($main2,0, 0, 0, 127));
+		imagesavealpha($main2, true);
+
+		$back = imagecreatefrompng($imgbgfolder.'bg.png');
+		$front = imagecreatefrompng($imgbgfolder.'bg2.png');
+
 		if($prec_border[0]>=$prec)
 		{
-		$imgcol = 'greenbar.png';
-		$barbg = 'greenbg.png';
+			$bar_color = 'green';
 		}
 		elseif($prec_border[1]>=$prec)
 		{
-		$imgcol = 'yellowbar.png';
-		$barbg = 'yellowbg.png';
+			$bar_color = 'yellow';
 		}
 		else
 		{
-		$imgcol = 'redbar.png';
-		$barbg = 'redbg.png';
+			$bar_color = 'red';
 		}
-		
-		$imbg3 = imagecreatefrompng($imgbgfolder.$imgcol);
-		$imbg4 = imagecreatefrompng($imgbgfolder.$barbg);
-		
-		imagefill($im, 0, 0, imagecolorallocatealpha($im,0, 0, 0, 127));
-		
-		imagesavealpha($im, true);
-		
-		$fontsize = 16;
-		$fh = 6;
-		
-		imagecopy ($im, $imbg1, 0, 0, 0, 0, $width, $height);
-		imagecopy ($im, $imbg3, 0, 0, 0, 0, $width, $height);
-		
-		if($prec!=100)imagefilledarc($im, $height/2, $width/2, $height-17, $width-17, -90+$angle, -90, imagecolorallocate($im, 1, 1, 1), IMG_ARC_PIE);
-		
-		imagecopy ($im, $imbg2, 0, 0, 0, 0, $width, $height);
-		imagecopy ($im, $imbg4, 0, 0, 0, 0, $width, $height);
-		
-		$tw1 = ($width - strlen($players)*$fw)/2;
-		$curcolor1 = imagecolorallocate($im, $textcolor[0], $textcolor[1], $textcolor[2]);
-		imagettftext($im, $fontsize, 0, $tw1, $width/2+$fh, $curcolor1, $font, $players);
-		
-		$tw2 = ($width - strlen($name)*($fw-2))/2;
+
+		$bar = imagecreatefrompng($imgbgfolder.$bar_color .'bar.png');
+		$bar_bg = imagecreatefrompng($imgbgfolder.$bar_color .'bg.png');
+
+		$center_w = $width/2;
+		$center_h = $height/2;
+		$box = imagettfbbox($fontsize, 0, $font, $current);
+		$position_w = $center_w-($box[2]-$box[0])/2;
+		$position_h = $center_h-($box[7]-$box[1])/2;
+
+		imagecopy($main, $back, 0, 0, 0, 0, $width, $height);
+		imagecopy($main, $bar, 0, 0, 0, 0, $width, $height);
+
+		if($prec!=100)imagefilledarc($main, $height/2, $width/2, $height-$arc_cut, $width-$arc_cut, -90+$angle, -90, imagecolorallocate($main, 1, 1, 1), IMG_ARC_PIE);
+
+		imagecopy($main, $front, 0, 0, 0, 0, $width, $height);
+		imagecopy($main, $bar_bg, 0, 0, 0, 0, $width, $height);
+
+		$bar_text = imagecolorallocate($main, $textcolor[0], $textcolor[1], $textcolor[2]);
+		imagettftext($main, $fontsize, 0, $position_w, $position_h, $bar_text, $font, $current);
+
+		/*$tw2 = ($width - strlen($name)*($fw-2))/2;
 		$curcolor2 = imagecolorallocate($im, $textcolor[0], $textcolor[1], $textcolor[2]);
-		imagettftext($im, $fontsize, 0, $tw2, $width/2+$fh+80, $curcolor2, $font, $name);
-		
+		imagettftext($im, $fontsize, 0, $tw2, $width/2+$fh+80, $curcolor2, $font, $name);*/
+
+		imagecopyresampled($main2,$main,0,0,0,0,$width/2*$zoom,$height/2*$zoom,$width,$height);
+
 		if($write==false)
 		{
 			//header('Content-Type: image/png');
-			imagepng($im);
+			imagepng($main2);
 		}
 		else
 		{
-			imagepng($im, $imgbgfolder.'../cache/'.$write.'.png');
+			imagepng($main2, $imgbgfolder.'../cache/'.$write.'.png');
 		}
-		
-		imagedestroy($im);
+
+		imagedestroy($main);
+		imagedestroy($main2);
+		imagedestroy($back);
+		imagedestroy($front);
+		imagedestroy($bar);
+		imagedestroy($bar_bg);
 	}
 }
 ?>

@@ -13,7 +13,7 @@ class conf
 		$this->core = $core;
 		
 		$this->sysf = dirname(__FILE__).'/sys/';
-		$this->ver = 'v2.3';
+		$this->ver = 'v2.4';
 		
 		$config = new ini($this->sysf.'config.ini');
 		
@@ -29,6 +29,7 @@ class conf
 			$this->timeout = 0.9;
 			$this->cachelife = 45;
 			$this->type = 'socket';
+			$this->size = 80;
 		}
 		else
 		{
@@ -43,7 +44,8 @@ class conf
 			$this->timeout = $c['main']['timeout'];
 			$this->cachelife = $c['main']['cachelife'];
 			$this->type = $c['main']['type'];
-			
+			$this->size = $c['main']['size'];
+
 			$this->db = array(
 				'host'=>$c['sql']['host'],
 				'port'=>$c['sql']['port'],
@@ -89,7 +91,7 @@ class conf
 		if(sizeof($cache->content)==0)return $arr;
 		foreach($cache->content as $id=>$info)
 		{
-			$arr[$id] = array('timestamp'=>$info['timestamp'],'min'=>$info['current'],'max'=>$info['slots'],'motd'=>$info['motd']);
+			$arr[$id] = array('timestamp'=>$info['timestamp'],'min'=>$info['current'],'max'=>$info['slots']/*,'motd'=>$info['motd']*/);
 		}
 		return $arr;
 	}
@@ -99,7 +101,8 @@ class conf
 	 * 
 	 * @access private
 	 * @param string $name уникальное имя сервера
-	 * @param array $params 
+	 * @param array $params
+	 * @return boolean
 	 */
 	public function set_cache($name,$params)
 	{
@@ -115,6 +118,7 @@ class conf
 	 * 
 	 * @access private
 	 * @param string [optional] уникальное имя сервера/серверов
+	 * @return boolean|array
 	 */
 	private function get_list()
 	{
