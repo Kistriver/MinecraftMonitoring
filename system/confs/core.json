@@ -1,0 +1,31 @@
+{
+    "font":
+    {
+        "name":"minecraft.ttf",
+        "color":[243,179,27]
+    },
+    "size":100,
+    "precent_border":[33,66],
+    "if_server_off":"OFF",
+    "sockets":
+    {
+        "port":25566,
+        "cachelife":45,
+        "timeout":0.9
+    },
+    "db":
+    {
+        "cachelife":45,
+        "host":"",
+        "user":"",
+        "pass":"",
+        "db":"",
+        "table":""
+    },
+    "minequery":
+    {
+        "cachelife":45,
+        "port":25566,
+        "timeout":0.9
+    }
+}

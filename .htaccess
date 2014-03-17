@@ -1,4 +1,0 @@
-<Files ~ "\.(sql|ini|conf|tpl|class.php|log)$">
-order allow,deny
-deny from all
-</Files>

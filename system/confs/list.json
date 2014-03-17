@@ -1,0 +1,32 @@
+{
+    "example":
+    {
+        "type":"sockets",
+        "host":"localhost",
+        "port":25565,
+        "name":"Example #1"
+    },
+    "example2":
+    {
+        "type":"db",
+        "host":"localhost",
+        "port":25565,
+        "db":
+        {
+            "host":"localhost",
+            "user":"",
+            "pass":"",
+            "db":"",
+            "table":"endless_online"
+        },
+        "name":"Example #2"
+    },
+    "example3":
+    {
+        "type":"minequery",
+        "host":"localhost",
+        "port":25565,
+        "mq_port":25566,
+        "name":"Example #3"
+    }
+}
