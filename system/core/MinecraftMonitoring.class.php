@@ -97,7 +97,7 @@ class MinecraftMonitoring
 				break;
 
 			case 'db':
-				$mysqli = isset($db[$id])?$db[$id]:new \mysqli(
+				$mysqli = isset($db[$id])?$db[$id]:@new \mysqli(
 					isset($server['db']['host'])?$server['db']['host']:$this->confs['db']['host'],
 					isset($server['db']['user'])?$server['db']['user']:$this->confs['db']['user'],
 					isset($server['db']['pass'])?$server['db']['pass']:$this->confs['db']['pass'],

@@ -1,0 +1,5 @@
+{
+    "example":{"online":true,"host":"localhost","port":25565,"name":"Example #1","max":26,"cur":7,"timestamp":1396447588000000000,"cachelife":45000000000000000000},
+    "example2":{"online":true,"host":"localhost","port":25565,"name":"Example #2","max":100,"cur":88,"timestamp":1396447588000000000,"cachelife":45000000000000000000000},
+    "example3":{"online":true,"host":"localhost","port":25565,"name":"Example #3","max":200,"cur":69,"timestamp":13964475630000000000,"cachelife":45000000000000000}
+}
