@@ -8,85 +8,87 @@ ini_set('html_errors',"0");
 
 require_once(dirname(__FILE__).'/system/core/MinecraftMonitoringPicture.class.php');
 
-$mmp = new MinecraftMonitoringPicture();
-switch(@$_GET['act'])
+try
 {
-	//Получение картинки
-	case 'get':
-		if(!isset($_GET['params']))$_GET['params'] = '';
+	$mmp = new MinecraftMonitoringPicture();
+	switch(@$_GET['act'])
+	{
+		//Получение картинки
+		case 'get':
+			if(!isset($_GET['params']))$_GET['params'] = '';
 
-		$params = explode(',',$_GET['params']);
+			$params = explode(',',$_GET['params']);
 
-		$ar = array();
-		foreach($params as $p)
-			$ar[$p] = $p;
-		$params = $ar;
+			$ar = array();
+			foreach($params as $p)
+				$ar[$p] = $p;
+			$params = $ar;
 
-		$mmp->drawInOutput($params);
-		break;
+			$mmp->drawInOutput($params);
+			break;
 
-	//Обновление кеша
-	case 'update':
-		if(!isset($_GET['params']))$_GET['params'] = '';
+		//Обновление кеша
+		case 'update':
+			if(!isset($_GET['params']))$_GET['params'] = '';
 
-		$params = explode(',',$_GET['params']);
+			$params = explode(',',$_GET['params']);
 
-		$ar = array();
-		foreach($params as $p)
-			$ar[$p] = $p;
-		$params = $ar;
+			$ar = array();
+			foreach($params as $p)
+				$ar[$p] = $p;
+			$params = $ar;
 
-		$ra = array();
-		foreach($params as $p)
-		{
-			//Uncomment second parameter(false) to force updating
-			$r = $mmp->getMinecraftMonitoring()->info($p/*,false*/);
-			$r = $mmp->drawInFile($p);
-			$ra[] = $r?'<span style="color: green;">[OK]</span>':'<span style="color: red;">[FAILED]</span>';
-		}
-		echo implode("<br />\r\n",$ra);
-		break;
+			$ra = array();
+			foreach($params as $p)
+			{
+				//Uncomment second parameter(false) to force updating
+				$r = $mmp->getMinecraftMonitoring()->info($p/*,false*/);
+				$r = $mmp->drawInFile($p);
+				$ra[] = $r?'<span style="color: green;">[OK]</span>':'<span style="color: red;">[FAILED]</span>';
+			}
+			echo implode("<br />\r\n",$ra);
+			break;
 
-	//Получение информации в формате JSON
-	case 'info':
-		if(!isset($_GET['params']))$_GET['params'] = '';
+		//Получение информации в формате JSON
+		case 'info':
+			if(!isset($_GET['params']))$_GET['params'] = '';
 
-		$params = explode(',',$_GET['params']);
+			$params = explode(',',$_GET['params']);
 
-		$ar = array();
-		foreach($params as $p)
-			$ar[$p] = $p;
-		$params = $ar;
+			$ar = array();
+			foreach($params as $p)
+				$ar[$p] = $p;
+			$params = $ar;
 
-		$ra = array();
-		foreach($params as $p)
-		{
-			$r = $mmp->getMinecraftMonitoring()->info($p);
-			$ra[$p] = $r;
-		}
-		echo json_encode($ra, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-		break;
+			$ra = array();
+			foreach($params as $p)
+			{
+				$r = $mmp->getMinecraftMonitoring()->info($p);
+				$ra[$p] = $r;
+			}
+			echo json_encode($ra, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+			break;
 
-	//Обновление картинки и переадресация на кеш
-	case 'picture':
-		if(!isset($_GET['params']))$_GET['params'] = '';
+		//Обновление картинки и переадресация на кеш
+		case 'picture':
+			if(!isset($_GET['params']))$_GET['params'] = '';
 
-		$params = explode(',',$_GET['params']);
+			$params = explode(',',$_GET['params']);
 
-		$ar = array();
-		foreach($params as $p)
-			$ar[$p] = $p;
-		$params = $ar;
+			$ar = array();
+			foreach($params as $p)
+				$ar[$p] = $p;
+			$params = $ar;
 
-		sort($params);
-		$img = implode('_',$params).'.png';
-		if(!file_exists(dirname(__FILE__).'/system/cache/img/'.$img))
-		$img = $mmp->drawInFile($params);
-		header("Location: ".str_replace('index.php','',$_SERVER['PHP_SELF'])."system/cache/img/".$img);
-		break;
+			sort($params);
+			$img = implode('_',$params).'.png';
+			if(!file_exists(dirname(__FILE__).'/system/cache/img/'.$img))
+			$img = $mmp->drawInFile($params);
+			header("Location: ".str_replace('index.php','',$_SERVER['PHP_SELF'])."system/cache/img/".$img);
+			break;
 
-	default:
-		?>
+		default:
+			?>
 			<!DOCTYPE html>
 			<html>
 			<head>
@@ -111,6 +113,7 @@ switch(@$_GET['act'])
 					.code .cb {margin: 0;border: 1px #ccc dashed; overflow: auto; background: #f3f3f4; padding: 12px
 					6px;}
 					.code {}
+					iframe{border: 1px #999 dashed; width:100%;}
 				</style>
 
 				<!-- Yandex.Metrika counter -->
@@ -122,10 +125,10 @@ switch(@$_GET['act'])
 		<div class="main">
 		<?php if(isset($_GET['author'])){ ?>
 			<h1>Author</h1>
-			<p>Created by <a href='http://vk.com/ak1998'>Kachalov Alexey</a>(<a href='http://vk.com/kcraft'>KCRAFT</a>)</p>
+			<p style="text-align: center;">Created by <a href='http://vk.com/ak1998'>Kachalov Alexey</a>(<a href='http://vk.com/kcraft'>KCRAFT</a>)</p>
 		<?php }elseif(isset($_GET['version'])){ ?>
 			<h1>Version</h1>
-			<p><?php echo MinecraftMonitoring::VER; ?></p>
+			<p style="text-align: center;"><?php echo MinecraftMonitoring::VER; ?></p>
 		<?php }else{ ?>
 			<h1>Radial monitoring by KachalovCRAFT</h1>
 
@@ -212,6 +215,22 @@ switch(@$_GET['act'])
 			</div>
 			</body>
 			</html>
-		<?php }
-		break;
+			<?php }
+			break;
+	}
+}
+catch(\Exception $e)
+{
+	echo "<b>Exception was thrown:</b> ";
+	echo $e->getMessage();
+	echo "<br />\r\n";
+	echo "Stack trace: ";
+	echo "<br />\r\n";
+	foreach($e->getTrace() as $k=>$tr)
+	{
+		$tr['file'] = str_replace(dirname(__FILE__),'<i>[MonitoringRoot]</i>',$tr['file']);
+		echo "<b>#{$k}</b> {$tr['file']}:{$tr['line']}->{$tr['function']}(";
+		echo implode(',',$tr['args']);
+		echo ")";
+	}
 }

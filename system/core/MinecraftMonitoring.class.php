@@ -11,7 +11,7 @@ namespace KCRAFT\libs;
 class MinecraftMonitoring
 {
 	private $confs, $list, $cache;
-	const VER = '2.6';
+	const VER = '2.7';
 
 	public function __construct()
 	{
