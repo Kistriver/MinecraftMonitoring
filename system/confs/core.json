@@ -20,7 +20,8 @@
         "user":"",
         "pass":"",
         "db":"",
-        "table":""
+        "table":"",
+        "server":""
     },
     "minequery":
     {

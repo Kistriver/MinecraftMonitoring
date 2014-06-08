@@ -11,7 +11,7 @@ namespace KCRAFT\libs;
 class MinecraftMonitoring
 {
 	private $confs, $list, $cache;
-	const VER = '2.7';
+	const VER = '2.8';
 
 	public function __construct()
 	{
@@ -113,13 +113,14 @@ class MinecraftMonitoring
 				$pr = $mysqli->prepare($query);
 				if(!$pr)throw new \Exception('Could not get info: mysqli error #'.$mysqli->errno);
 
-				$pr->bind_param("s", isset($server['db']['table'])?$server['db']['table']:$this->confs['db']['table']);
+				$server_name = isset($server['db']['server'])?$server['db']['server']:$this->confs['db']['server'];
+				$pr->bind_param("s", $server_name);
 				$pr->execute();
 				$pr->bind_result($online, $max_online);
 				$pr->fetch();
 
 				$return = array();
-				if($max_online!=0)
+				if($max_online!=0 && $online!=-1)
 				{
 					$return = array
 					(

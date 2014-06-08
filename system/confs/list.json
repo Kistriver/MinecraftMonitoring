@@ -17,7 +17,8 @@
             "user":"",
             "pass":"",
             "db":"",
-            "table":"endless_online"
+            "table":"endless_online",
+            "server":"server_name"
         },
         "name":"Example #2"
     },

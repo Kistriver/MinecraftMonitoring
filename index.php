@@ -66,6 +66,7 @@ try
 				$r = $mmp->getMinecraftMonitoring()->info($p);
 				$ra[$p] = $r;
 			}
+			if(!defined('JSON_PRETTY_PRINT'))define('JSON_PRETTY_PRINT',0);
 			echo json_encode($ra, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 			break;
 
