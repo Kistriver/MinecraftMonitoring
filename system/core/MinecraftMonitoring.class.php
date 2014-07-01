@@ -125,8 +125,8 @@ class MinecraftMonitoring
 					$return = array
 					(
 						'online'=>true,
-						'max'=>$online,
-						'cur'=>$max_online,
+						'max'=>$max_online,
+						'cur'=>$online,
 					);
 				}
 
