@@ -1,5 +1,5 @@
 <?php
-namespace KCRAFT\libs;
+namespace Kistriver\libs;
 
 ini_set('display_errors',"1");
 ini_set('display_startup_errors',"1");
@@ -94,12 +94,11 @@ try
 			<html>
 			<head>
 				<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-				<meta name="Description" content="Radial monitoring by KachalovCRAFT" />
+				<meta name="Description" content="Radial monitoring by Kistriver" />
 				<meta name="robots" content="all,follow" />
 				<meta name="author" content="Kachalov" />
-				<meta name="copyright" content="KachalovCRAFT NET" />
-				<link rel="shortcut icon" href="http://test.kcraft.su/client/style/img/main/favicon.ico">
-				<title>Radial monitoring by KachalovCRAFT</title>
+				<meta name="copyright" content="Kistriver" />
+				<title>Radial monitoring by Kistriver</title>
 				<style type="text/css">
 					body { color: #333333; background: #e7e7e8; font-size: 14px; font-family: Arial;
 						background-image: url('http://test.kcraft.su/client/style/img/main/bg.jpg') }
@@ -126,12 +125,12 @@ try
 		<div class="main">
 		<?php if(isset($_GET['author'])){ ?>
 			<h1>Author</h1>
-			<p style="text-align: center;">Created by <a href='http://vk.com/ak1998'>Kachalov Alexey</a>(<a href='http://vk.com/kcraft'>KCRAFT</a>)</p>
+			<p style="text-align: center;">Created by <a href='http://vk.com/ak1998'>Kachalov Alexey</a>(<a href='http://vk.com/kistriver'>Kistriver</a>)</p>
 		<?php }elseif(isset($_GET['version'])){ ?>
 			<h1>Version</h1>
 			<p style="text-align: center;"><?php echo MinecraftMonitoring::VER; ?></p>
 		<?php }else{ ?>
-			<h1>Radial monitoring by KachalovCRAFT</h1>
+			<h1>Radial monitoring by Kistriver</h1>
 
 <h3>1. Picure</h3>
 			<p>Получаем картинку из кеша. Если ее там нет, то создаем.</p>

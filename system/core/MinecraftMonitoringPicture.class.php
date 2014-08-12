@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Alexey Kachalov <alex-kachalov@mail.ru>
- * @author Alexey Kachalov <alex-kachalov@mail.ru>
+ * @copyright Alexey Kachalov <kachalov92@yandex.ru>
+ * @author Alexey Kachalov <kachalov92@yandex.ru>
  * @access public
- * @see http://kcraft.su/
+ * @see http://kistriver.com/
  * @license GNU Public Licence - Version 3
  */
 
-namespace KCRAFT\libs;
+namespace Kistriver\libs;
 class MinecraftMonitoringPicture
 {
 	protected $MinecraftMonitoring;
